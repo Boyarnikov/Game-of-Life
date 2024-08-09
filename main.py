@@ -2,44 +2,46 @@ import pygame
 import random
 from interface.button import Button
 from interface.label import Label
+from interface.button_with_label import ButtonWithLabel
 from interface import interface_object
+import config
+import layout
 
 pygame.init()
-screen = pygame.display.set_mode((200, 200))
+screen = pygame.display.set_mode((1, 1))
 clock = pygame.time.Clock()
 
-running = True
-color = (0, 0, 0)
 
-drawables = []
-clickable = []
+def init_window():
+    layout.create_game_layout()
 
-button1 = Button((10, 10), (100, 40), (255, 100, 100), func=lambda: print("Я ПЕРВАЯ КНОПКА"))
-button2 = Button((80, 60), (100, 40), (255, 100, 100))
+    def change_size():
+        layout.field.set_scale((random.randint(20, 100), random.randint(20, 100)))
+        layout.field.randomize()
+        layout.recalculate_layout()
 
-label = Label(position=(10, 0), text="HELLO WORLD")
-
-def button2_func():
-    button2.set_color((random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
+    layout.random_button.set_function(change_size)
 
 
-button2.set_function(button2_func)
+if __name__ == "__main__":
+    init_window()
 
-for i in interface_object.InterfaceObject.get_items():
-    print(i)
+    # Главный цикл
+    running = True
+    while running:
+        # обработка событий
+        events = []
+        for event in pygame.event.get():
+            if event.type == pygame.WINDOWCLOSE:
+                running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                interface_object.handle_interface_objects_click(event)
 
-while running:
-    events = []
-    for event in pygame.event.get():
-        if event.type == pygame.WINDOWCLOSE:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            interface_object.handle_interface_objects_click(event)
+        # отрисовка
+        screen.fill((255, 255, 255))
+        interface_object.draw_interface_objects(screen)
+        pygame.display.flip()
 
-    screen.fill((255, 255, 255))
-    interface_object.draw_interface_objects(screen)
+        clock.tick(30)
 
-    pygame.display.flip()
-    clock.tick(30)
-
-pygame.quit()
+    pygame.quit()
