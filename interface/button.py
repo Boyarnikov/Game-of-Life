@@ -10,8 +10,8 @@ Color = Tuple[int, int, int]
 class Button(InterfaceObject):
     _position: Tuple[int, int] = (0, 0)
     _scale: Tuple[int, int] = (30, 10)
-    _color: Tuple[int, int, int] = (0, 0, 0)
-    _function: Callable[[], None] = lambda: None
+    _color: Tuple[int, int, int] | "Color" = (0, 0, 0)
+    _function: Callable[[], None] = lambda self: None
 
     def __init__(self,
                  position: Vector2 | None = None,
